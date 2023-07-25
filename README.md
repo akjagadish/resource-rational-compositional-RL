@@ -3,7 +3,7 @@
 Code for "Zero-shot compositional reinforcement learning in humans".
 
 <p align="center">
-  <img src="" />
+  <img src="figures/Experiment.png" />
 </p>
 
 
