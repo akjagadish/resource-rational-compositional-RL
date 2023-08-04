@@ -32,7 +32,7 @@ Code for the experiments is available in the `src` folder.
 #### Meta-reinforcement learning models: using anaconda
 1. Install anaconda (https://docs.anaconda.com/anaconda/install/)
 2. Create a new environment using the following command:
-```conda create -name pytorch-gpu \
+```conda create -name pytorch-gpu ```
 3. Activate the environment using the following command:
 ```conda activate pytorch-gpu```
 4. Install the required packages using the following command:
