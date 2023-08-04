@@ -13,7 +13,7 @@ from importlib import reload
 from collections import defaultdict
 from matplotlib import pyplot as plt
 from ParticipantFit import ParticipantFit
-from ChoiceModel import MeanTrackerCompositional, ChoiceModel, MeanTrackerCompositionalChangePoint
+from ChoiceModel import GrammarModel, ChoiceModel, SimpleGrammarModel, SimpleGrammarModelConstrained, SimpleGrammarModelConstrainedChangePoint
 from KernelGrammar import KernelGrammar
 from EpisodicDictionary import EpisodicDictionary
 from Kernels import Kernels
@@ -21,7 +21,7 @@ from Kernels import Kernels
 
 rule = 'changepoint'
 data_folder = "/u/ajagadish/resource-rational-compositional-RL/data/raw_data/{}_data/".format(rule)
-save_path = "/u/ajagadish/resource-rational-compositional-RL/src/model_fits/"
+save_path = "/u/ajagadish/resource-rational-compositional-RL/src/model_fits/" #"/notebooks/modelfits/reward_preds/{}/simple_grammar_constrained_preds/".format(rule)
 participant_data = np.array([pos_json for pos_json in listdir(data_folder) if pos_json.endswith('.json')])
 np.random.shuffle(participant_data)
 existing_model_files = listdir(save_path)
@@ -30,6 +30,7 @@ for i, participant_id in enumerate(participant_data):
     print("Participant number: ", i)
     participant_identifier = participant_id[:-5] # removes json suffix
     filename = participant_identifier + "_rewards.csv"
+    print(participant_id)
     if filename in existing_model_files:
         print("already fitted -- move on to next participant")
         continue
@@ -41,10 +42,10 @@ for i, participant_id in enumerate(participant_data):
 
         num_iters = 200
         if rule == 'add':
-            model = MeanTrackerCompositional(grammar, episodic_dict, value_function, choice_function=None, training_iters=num_iters)
+            model = SimpleGrammarModelConstrained(grammar, episodic_dict, value_function, choice_function=None, training_iters=num_iters)
         else:
-            model = MeanTrackerCompositionalChangePoint(grammar, episodic_dict, value_function, choice_function=None, training_iters=num_iters)
-
+            model = SimpleGrammarModelConstrainedChangePoint(grammar, episodic_dict, value_function, choice_function=None, training_iters=num_iters)
+        
         params = {}
         participant_fitter = ParticipantFit(participant_id, model, params, path=data_folder, save_path = save_path, rule=rule)
         participant_fitter.fit()

@@ -13,7 +13,7 @@ from importlib import reload
 from collections import defaultdict
 from matplotlib import pyplot as plt
 from ParticipantFit import ParticipantFit
-from ChoiceModel import MeanTrackerCompositional, ChoiceModel, MeanTrackerCompositionalChangePoint
+from ChoiceModel import GrammarModel, ChoiceModel, MeanTracker, RBFModelMemory
 from KernelGrammar import KernelGrammar
 from EpisodicDictionary import EpisodicDictionary
 from Kernels import Kernels
@@ -21,7 +21,7 @@ from Kernels import Kernels
 
 rule = 'changepoint'
 data_folder = "/u/ajagadish/resource-rational-compositional-RL/data/raw_data/{}_data/".format(rule)
-save_path = "/u/ajagadish/resource-rational-compositional-RL/src/model_fits/"
+save_path = "/u/ajagadish/resource-rational-compositional-RL/src/model_fits/" #"/notebooks/modelfits/reward_preds/{}/simple_grammar_constrained_preds/".format(rule)
 participant_data = np.array([pos_json for pos_json in listdir(data_folder) if pos_json.endswith('.json')])
 np.random.shuffle(participant_data)
 existing_model_files = listdir(save_path)
@@ -34,18 +34,15 @@ for i, participant_id in enumerate(participant_data):
         print("already fitted -- move on to next participant")
         continue
     else:
-        depth = 1
-        grammar = KernelGrammar(basis_kernels = Kernels.get_basic_kernels(), complexity_penalty = 0.7, ignore_warnings=True, depth=1)
-        episodic_dict = EpisodicDictionary(num_features=2)
-        value_function = ChoiceModel.UCB
 
-        num_iters = 200
-        if rule == 'add':
-            model = MeanTrackerCompositional(grammar, episodic_dict, value_function, choice_function=None, training_iters=num_iters)
-        else:
-            model = MeanTrackerCompositionalChangePoint(grammar, episodic_dict, value_function, choice_function=None, training_iters=num_iters)
+        num_iters = 50
+        sees_context_features = False  # set this to False to get the RBF no context model
+        model = RBFModelMemory(sees_context_features, num_iters)
 
         params = {}
-        participant_fitter = ParticipantFit(participant_id, model, params, path=data_folder, save_path = save_path, rule=rule)
-        participant_fitter.fit()
+        participant_fitter = ParticipantFit(participant_id, model, params,  path=data_folder, savefolder = "rbf_nocontext_preds")
+
+        participant_fitter.create_full_dataset()
+        participant_fitter.fit_all_tasks() # here we use the fit_all_tasks method instead
+
         participant_fitter.to_csv()  # then we save the csv files

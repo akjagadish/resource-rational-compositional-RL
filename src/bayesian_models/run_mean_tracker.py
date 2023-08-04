@@ -1,4 +1,3 @@
-
 #%%codecell
 import numpy as np
 import pandas as pd
@@ -22,11 +21,9 @@ from Kernels import Kernels
 #%%codecell
 
 
-#%%codecell
-rule = 'add'
-data_folder = "/notebooks/experiment/{}_data/{}_data/".format(rule, rule)
-save_path = "/notebooks/modelfits/reward_preds/{}/mean_tracker_preds/".format(rule)
-#participant_data = glob.glob(data_folder+"*.json")
+rule = 'changepoint'
+data_folder = "/u/ajagadish/resource-rational-compositional-RL/data/raw_data/{}_data/".format(rule)
+save_path = "/u/ajagadish/resource-rational-compositional-RL/src/model_fits/" #"/notebooks/modelfits/reward_preds/{}/mean_tracker_compositional/".format(rule)
 participant_data = np.array([pos_json for pos_json in listdir(data_folder) if pos_json.endswith('.json')])
 np.random.shuffle(participant_data)
 existing_model_files = listdir(save_path)
@@ -46,6 +43,5 @@ for i, participant_id in enumerate(participant_data):
         params = {}  # this is useless, we can clean up this code later.
         participant_fitter = ParticipantFit(participant_id, model, params, path=data_folder, save_path=save_path, rule=rule)
         participant_fitter.fit()
-
         participant_fitter.to_csv()  # then we save the csv files
 #%%codecell
