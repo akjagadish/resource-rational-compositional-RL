@@ -27,7 +27,7 @@ Code for the experiments is available in the `src` folder.
 2. Download the si from docker hub using the following command:
 ```singularity pull gpytorch-image.sif docker://akjagadish/gpytorch:latest```
 3. Run the models within the container. For example, to run the simulations for the mean tracker model, run the following command:
-``` srun singularity exec --bind ./:/notebooks/ /resource-rational-compositional-RL/gpytorch-image.sif python /u/ajagadish/resource-rational-compositional-RL/src/bayesian_models/run_mean_tracker_optimal_simulation.py```
+```singularity exec --bind ./:/notebooks/ /resource-rational-compositional-RL/gpytorch-image.sif python /resource-rational-compositional-RL/src/bayesian_models/run_mean_tracker_optimal_simulation.py```
 
 #### Meta-reinforcement learning models: using anaconda
 1. Install anaconda (https://docs.anaconda.com/anaconda/install/)
@@ -38,4 +38,4 @@ Code for the experiments is available in the `src` folder.
 4. Install the required packages using the following command:
 ```conda install -c conda-forge python==3.9.13 numpy pytorch gym numpy pandas tqdm matplotlib tensorboard seaborn jupyterlab```
 5. Train the RR-RL2 model within the conda environment.
-```python3 traina2c.py --c ${SLURM_ARRAY_TASK_ID} --prior svdo --env-name jagadish2022curriculum-v0 --no-cuda --runs 1 --entropy-loss --c-scale 10```
+```python3 traina2c.py --c 10000 --prior svdo --env-name jagadish2022curriculum-v0 --no-cuda --runs 1 --entropy-loss --c-scale 10```
