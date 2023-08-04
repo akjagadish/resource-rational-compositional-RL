@@ -16,9 +16,27 @@ Data for experiments 1 and 2 are available in the `data` folder and can be loade
 
 ### Code Availability
 Code for the experiments is available in the `src` folder. 
-`requirements.txt` contains the required python packages to run the code.
+<!-- `requirements.txt` contains the required python packages to run the code. -->
 
 <!-- ## Requirements -->
 
-<!-- ## Instructions to run the code -->
+## Instructions to run the code
 
+#### Bayesian Models: run using singualarity container
+1. Install singularity (https://sylabs.io/guides/3.5/user-guide/quick_start.html#quick-installation-steps)
+2. Download the si from docker hub using the following command:
+```singularity pull gpytorch-image.sif docker://akjagadish/gpytorch:latest```
+3. Run the models within the container. For example, to run the simulations for the mean tracker model, run the following command:
+``` srun singularity exec --bind ./:/notebooks/ /resource-rational-compositional-RL/gpytorch-image.sif python /u/ajagadish/resource-rational-compositional-RL/src/bayesian_models/run_mean_tracker_optimal_simulation.py```
+
+#### Meta-reinforcement learning models: using anaconda
+1. Install anaconda (https://docs.anaconda.com/anaconda/install/)
+2. Create a new environment using the following command:
+```conda create -name pytorch-gpu \
+3. Activate the environment using the following command:
+```conda activate pytorch-gpu```
+4. Install the required packages using the following command:
+```conda install -c conda-forge python==3.9.13 numpy pytorch gym numpy pandas tqdm matplotlib tensorboard seaborn jupyterlab```
+5. Train the RR-RL2 model within the conda environment.
+```python3 traina2c.py --c ${SLURM_ARRAY_TASK_ID} --prior svdo --env-name jagadish2022curriculum-v0 --no-cuda --runs 1 --entropy-loss --c-scale 10
+```
