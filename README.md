@@ -38,5 +38,4 @@ Code for the experiments is available in the `src` folder.
 4. Install the required packages using the following command:
 ```conda install -c conda-forge python==3.9.13 numpy pytorch gym numpy pandas tqdm matplotlib tensorboard seaborn jupyterlab```
 5. Train the RR-RL2 model within the conda environment.
-```python3 traina2c.py --c ${SLURM_ARRAY_TASK_ID} --prior svdo --env-name jagadish2022curriculum-v0 --no-cuda --runs 1 --entropy-loss --c-scale 10
-```
+```python3 traina2c.py --c ${SLURM_ARRAY_TASK_ID} --prior svdo --env-name jagadish2022curriculum-v0 --no-cuda --runs 1 --entropy-loss --c-scale 10```
