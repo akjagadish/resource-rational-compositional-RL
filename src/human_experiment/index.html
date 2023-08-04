@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compositional Bandit Experiment">
+    <meta name="author" content="Akshay Jagadish, Eric Schulz">
+    <meta charset="utf-8">
+    <title>Decision making experiment</title>
+
+    <script src='https://cdn.firebase.com/js/client/1.1.1/firebase.js'></script>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script> 
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script> 
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css">
+    <link href="js/bootstrap.css" rel="stylesheet" type="text/css">
+
+ </head>
+
+<body>
+<div class='container' style="width: 95%; height: 95%">
+	<div id="page1" style="display:block;">
+			<h1>Welcome to our online study on decision making</h1>
+			
+			This study is part of a research project conducted
+			by the <a href="http://cpilab.org/" target="_blank">Computational Principles of Intelligence Group</a>
+			at the Max Planck Institute for Biological Cybernetics in Tuebingen, Germany.<br><br>
+			
+			<!-- images of town + Institute here-->
+			<span>
+			  <img src="./figs/tuebingen.jpg" height="300px">
+			  <img src="./figs/mpi.jpg" height="300px">
+			<figcaption style="font-size: 10px;">By Rabe! - Own work, CC BY-SA 3.0, <a href=" https://commons.wikimedia.org/w/index.php?curid=33554043" target="_blank"> Source </a></figcaption>
+			</span>
+			<br>
+			Your job will be to play an easy and fun game that we call <b>Bandit City!</b><br>
+			
+			To be eligible to participate, you <strong> MUST </strong> meet the following criteria:
+			<ol>
+			<li>Be 18 years of age or older.</li>
+			<li>Be a fluent speaker of English.</li>
+			<li>Have not previously participated in this experiment.</li>
+			</ol>
+			<b style="color:maroon;">Please use a device with a keyboard.
+			Please do not accept this task if you are using a touch screen device, it will not work!</b>
+			
+			<h4>How much time will it take and how much can you earn?</h4>
+			The study will take <b>20-30 minutes</b>.<br>
+			You will be paid <b>£2</b> pounds for participation plus a bonus of up to <b>£2.5</b> pounds depending on your performance.<br>
+			<!-- Hence, the <b>expected payment is something around $6.00 to $7.00</b>. -->
+	  
+			<h4>Confidentiality</h4>
+			Your participation in this study will remain confidential.
+			Your Prolific ID will NOT be shared with anyone outside the research team.
+	  
+			<h4>Participation and withdrawal</h4>
+			Your participation in this study is completely voluntary and you may refuse to participate<br>
+			or you may choose to withdraw at any time.<br>
+			However, you will only be paid for the participation upon completion<br>
+			and if you enter the correct completion code provided at the end of the study.
+	
+			<h4>How to contact the researchers?</h4>
+			If you have questions or concerns about your participation or payment
+			or want to request a summary of research findings,
+			please email the <a href="mailto:cpilab@tuebingen.mpg.de">researcher</a>
+			or the <a href="mailto:eric.schulz@tuebingen.mpg.de">principal investigator</a> (Dr. Eric Schulz).
+	  
+			
+			<h4>Data protection</h4>
+			Your data will be anonymized and only used in the manner described in our data protection sheet,
+			available <a href="https://kyblab.tuebingen.mpg.de/compositionalbandits/data_protection.pdf" target="_blank">here</a> 
+			(please do not fill out this sheet!).
+			The following text box summarizes the main points. Please read it carefully and provide consent below:<br>
+			<br>
+			
+			<textarea rows="10" cols="150" readonly>
+The processing and use of the collected data occurs in a pseudoanonymized form within the scope of the legally prescribed provisions.
+As a general rule, the storage occurs in the form of answered questionnaires, as well as electronic data, for a duration of 10 years or longer, if this is required by the purpose of the study.
+
+By providing of further personal data in pseudoanonymized form, collected personal data may be used for the preparation of anonymized
+scientific research work and may also be published and used in an anonymized form in medical journals and scientific publications, so that a direct assignment to my person cannot be established.
+
+The information obtained during the course of this study may also be sent in an anonymized form to cooperation partners within the scope of
+the European General Data Protection Regulation for scientific purposes and to cooperation partners outside of the European Union, i.e. to countries with a lower data protection level (this also applies to the USA).
+
+The data collected within the scope of the study can also be used and processed in the future inside of the Max Planck Institute.
+
+I was informed about my rights, that at any time:
+
+I can withdraw this declaration of consent.
+
+I can request information about my stored data and request the correction or blocking of data.
+
+By cancellation of my participation in the study,
+I can request that any personal data of mine collected until that point are immediately deleted or anonymized.
+
+I can request that my personal data are handed out to me or to third parties (if technically feasible).
+
+I herewith declare that:
+
+I have been adequately informed about the collection and processing of my personal data and rights.
+
+I consent to the collection and processing of personal data within the scope of the study and its pseudoanonymized disclosure,
+so that only the persons conducting the study can establish a link between the data and my person.
+
+Agreement:
+
+I agree to participate in this experiment.
+
+I consent to the use of my data described in the Data Protection Information Sheet
+and confirm having received a copy of the Data Protection Sheet.
+
+I consent to data transfer from the MPI for Biological Cybernetics encrypted database to the project-related collaborators:
+inside of the Max Planck Society and affiliated research institutes, or at partnering institutions like the University of Tuebingen.
+			</textarea>      
+			
+			<br>
+			<br>
+			By selecting the consent option below,
+			you acknowledge that you fulfill all of the participation criteria
+			and you agree to your data being used as described.
+			<br>
+			<br>
+	
+			<button type="button" name="button" id="buttonConsentForm" onclick="clickStart('page1','page2');">I consent to participate</button><br><br>
+
+    </div>  
+
+	<!--Introduce Bandit City-->
+	<div id="page2" style="display:none">
+		<br>
+		<!-- <h2 style="text-align: center;">Welcome!</h2> -->
+		<p style="font-size:125%; text-align: center;">
+		<img src="figs/BanditCity.png"><br>
+		Today, you are going to be a gambler visiting the fictional town of <b>Bandit City</b>, <i>BC</i> in short.<br>
+		Bandit City is the place to be if you wish to immerse yourself in the world of gambling.<br>
+		Like any major gambling city, Bandit City has several casinos lined up next to one another.<br>
+		As an experienced gambler, you like to visit all the casinos whenever you are in town and make some money.<br>
+		<!-- <ul>
+		<li>Today, you are going be a gambler visiting the fictional town of Bandit City (BC).</li>
+		<li>BC is the place to be if you wish to immerse yourself in the world of gambling.</li>
+		<li>Like any major gambling city, BC has several casinos lined up next to one another.</li>
+		<li>As an experienced gambler, you like to visit all the casinos whenever you are in town and make some money.</li>
+		</ul> -->
+		<br>
+		<button type="button" name="button"; onclick=""; > <span style="color: gray;"> Back </span> </button>			   
+		<button type="button" name="button"; onclick="clickStart('page2','page3')";> Next</button>
+		</p>
+	</div>
+
+	<!--Tasks-->
+	<div id="page3" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Local News!</h2>
+		<p style="font-size:125%; text-align: center;">
+		<img src="figs/MAB.png" width="300"><br>
+		To promote local businesses, casinos in Bandit City only buy slot machines from their local manufactures.<br>
+		So all casinos now have two slot machines, one each from <i> Green Geeks </i> and <i> Blue Lagoons</i>.<br>
+		Let us take a look at these machines.<br>
+		<br>
+		<button type="button" name="button"; onclick="clickStart('page3','page2')"; > Back </button>			   
+		<button type="button" name="button"; onclick="clickStart('page3','page4a')"; >Next</button>
+		</p>
+	</div>
+
+	<!--MAB-->
+	<div id="page4a" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Slot Machines 2.0</h2>
+		<p style="font-size:125%; text-align: center;">
+		Each slot machine has several options that you can choose from to earn <b>BC coins</b>. <br>
+		Each option maps on to different keys on your keyboard.<br>
+		<!-- <br><img src="figs/White_arms.png" width="600" ><br> -->
+		You can choose an option by pressing the corresponding key on your keyboard. <br>
+		The color of the options indicates which company made the slot machine. <br> 
+		It will be <strong style="color: #50BF00;"> green </strong> if made by <i> Green Geeks </i> as shown below:
+		<br><img src="figs/Green_arms.png" width="600" ><br>
+		or <strong style="color: #0090DF;"> blue </strong> if made by <i> Blue Lagoons </i> as shown below: 
+		<br><img src="figs/Blue_arms.png" width="600" ><br>
+			When you have made a choice, the key you pressed becomes bold and the amount of BC coins you won will appear on the screen.<br>	
+		<br>
+		<button type="button" name="button"; onclick="clickStart('page4a','page3')"; > Back </button>			   
+		<button type="button" name="button"; onclick="clickStart('page4a','page4b')"; >Next</button>
+		</p>
+	</div>
+
+	<!--MAB-->
+	<div id="page4b" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Slot Machines 2.0</h2>
+		<p style="font-size:125%; text-align: center;">
+		The number of BC coins you can get is different for the different keys of the slot machine. <br>
+		You have <b> 5 chances </b> for each slot machine and your goal is to win as many BC coins as possible. <br>
+		The earlier you find the most lucrative option, the more BC coins you can earn by <b> repeatedly pressing </b> it. <br>
+		Given your enthusiasm, you tend to play all available slot machines in a casino before moving to the next casino. <br>
+		You will be told what percent of the maximum possible coins you earned after every casino so that you know how well you are doing. <br>
+		<!-- You can use it to evalute your current strategy. <br> -->
+		<!-- You will exchange the BC coins you earn for real money at the end of you stay in each casino. -->
+		You will exchange all the BC coins you earned across casinos for real money at the end of your adventure. <br>
+		<br>
+		<button type="button" name="button"; onclick="clickStart('page4b','page4a')"; > Back </button>			   
+		<button type="button" name="button"; onclick="clickStart('page4b','page5a')"; > Next </button>
+		</p>
+	</div>
+
+	<!--sMAB-->
+	<div id="page5a" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Shh....!</h2>
+		<p style="font-size:125%; text-align: center;">
+		During his visit to Bandit City last weekend, a friend of yours had an insight. <br>
+		As he went from casino to casino, he noticed that slot machines from the same company behaved <i>somewhat similarly</i>. <br>
+		He realized that the coins he could earn from the different options followed a <strong> certain pattern. </strong> <br>
+		The pattern was similar amongst machines produced by the same company and each company had its own distinct pattern. <br>
+		<!--  He earned a lot of money that night as soon as he started using this finding. <br> -->
+		<!--  It was as if the companies preset the coins one could earn from each option to these Patterns before delivering it. <br> -->
+		<br>
+		<button type="button" name="button"; onclick="clickStart('page5a','page4b')"; > Back </button>			   
+		<button type="button" name="button"; onclick="clickStart('page5a','pagehmm')"; > Next</button>
+		</p>
+	</div>
+
+	<div id="pagehmm" style="display:none">
+		<br>
+	<h2 style="text-align: center;">Hmm...but what patterns?</h2>
+		<p style="font-size:125%; text-align: center;">
+		<br>
+		<img src="figs/think.png" width="180"><br><br>
+		<button type="button" name="button"; onclick="clickStart('pagehmm','page5a')"; > Back </button>			   
+		<button type="button" name="button"; onclick="clickStart('pagehmm','page5b')"; > Next</button>
+		</p>
+	</div>
+
+	<div id="page5b" style="display:none">
+		<br>
+		<!-- <h2 style="text-align: center;">Hmm...but what patterns?</h2> -->
+		<p style="font-size:180%; text-align: center;">
+		<!-- He noted that machines from a company could follow one of the <strong> two </strong> patterns:  </p> -->
+		One company showed a...</p>
+		<h3 style="text-align: center;"> Rising/Falling Pattern </h3>
+		<p style="font-size:125%; text-align: center;">
+			He could either get more coins as he went from key S to L (Rising; top row) or fewer coins as he went from key S to L (Falling; bottom row). <br>
+			<img src="figs/RiseNFall.png" width="600" style="vertical-align: bottom" > <br>	
+			A machine from a company following rising/falling pattern could be rising in one casino and falling in the other. <br>
+			The amount of rise or fall may vary from casino to casino. <br>	
+			<br>
+			<button type="button" name="button"; onclick="clickStart('page5b','pagehmm')"; > Back </button>			   
+			<button type="button" name="button"; onclick="clickStart('page5b','page5c')"; >Next</button>
+		</p>
+	</div>
+
+	<div id="page5c" style="display:none">
+		<br>
+		<!-- <h2 style="text-align: center;">Hmm...but what patterns?</h2> -->
+		<p style="font-size:180%; text-align: center;"> The other company showed an...</p>
+		<h3 style="text-align: center;"> Alternating Pattern </h3>
+		<p style="font-size:125%; text-align: center;">
+			He saw that every other option was highly rewarding so either keys (S, F, K; top row) or (D, J, L; bottom row) could be more rewarding. <br>
+			<img src="figs/Alternating.png" width="600" style="vertical-align: bottom" ><br>	
+			A machine from a company following the alternating pattern can either have options (S, F, K) or (D, J, L) to be highly rewarding.<br>
+			The magnitude of the highly rewarding option may vary from casino to casino. <br>
+			<br>
+			<button type="button" name="button"; onclick="clickStart('page5c','page5b')"; > Back </button>			   
+			<button type="button" name="button"; onclick="clickStart('page5c','page6')"; >Next</button>
+		</p>
+	</div>
+
+	<!--Task purpose-->
+	<div id="page6" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Your mission</h2>
+		<p style="font-size:125%; text-align: center;">
+		Unfortunately, your buddy went a little out of control that night - what happens in Bandit City stays in Bandit City! <br>
+		Now, he only remembers the patterns but  does not recollect <b style="color:maroon;">which company produces which pattern</b>. <br>
+		The good news is that if you can figure this out, you can earn a lot of coins and leave Bandit City a rich person. <br>
+		Note that a company either only produces rising/falling machines, or it only produces alternating machines. <br>
+		<!-- <li> Remember, the trend followed by a slot machine i.e. Linear or Alternate remains same as you go from casino to casino. </li> -->
+		<!-- <li> After you visited all the casinos, you can exchange all the BC coins you have collected for real money. </li> -->
+		<br>
+		<button type="button" name="button"; onclick="clickStart('page6','page5c')"; > Back </button>			   
+		<button type="button" name="button"; onclick="ConditionSwitch('page6')"; >Next</button>
+		</p>
+	</div>
+
+	<!--Condition based: Compositional-->
+	<div id="page7a" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Oh wait!</h2>
+		<p style="font-size:125%; text-align: center;">			
+			The casino owners recently noticed that a lot of people were doing well on the new slot machines. <br>
+			They now want to challenge their visitors. <br>
+			<!-- as a test to see if people actually are exploiting the pattern individually -->
+			So, once you finish playing against the two slot machines, they will connect the machines together and ask you to play against the connected slot machine. <br>
+			The machines are connected such that it has blocks of three keys (either <b>SDF</b> or <b>JKL</b>) from previously played slot machines. <br>
+			Three options for such a connected machine will be <strong style="color: #50BF00;"> green </strong> and the remaining in <strong style="color: #0090DF;"> blue </strong> indicating the slot machine they are from. <br>
+			They can be connected in one of the two orders as shown below. <br>
+			<img id="changepoint_condition" src="figs/ChangePoint.png" width="600"><br>
+			The coins for an option is expected to be roughly equal to that of the same colored option previously seen in the casino. <br>
+			Essentially, you will be playing <strong> three  slot machines </strong> (green, blue, and connected green-blue) in each casino today. <br>
+			Before you start, here is a quick tutorial to get you upto speed! <br>
+			<!-- Hope you are up for the challenge! <br> -->
+		<br>
+		<button type="button" name="button"; onclick="clickStart('page7a','page6')"; > Back </button>
+		<button type="button" name="button"; onclick="clickStart('page7a','tutorial')"; >Next</button>
+		</p>
+	</div>
+	<!-- tutorial for compositional -->
+	<!-- add
+	<div id="tutorial" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Connected Machine</h2>
+		<p style="font-size:125%; text-align: center;">			
+		Imagine you enter a casino and start playing against the first slot machine. <br>
+		This machine could be either from Blue Lagoons or Green Geeks. In this casino, the first slot machine was made by Blue Lagoons. <br>
+		Let us say, you picked option <b>J</b> on one of the trials and got <b>0.3</b> coins as shown below. <br>
+		<img src="figs/BlueSlotMachinePressed.png" width="600"><br><br>
+		Once you finish five trials on the first slot machine, you move to the second slot machine in the same casino. <br>
+		The second slot machine is made by the other company, Green Geeks in this case. <br>
+		On this slot machine, assume you got <b>4.0</b> coins from option <b>J</b> on one of the trials as shown below. <br>
+		<img src="figs/GreenSlotMachinePressed.png" width="600"> <br><br> 
+		After playing your quota of trials on the second machine, the owners would connect the two slot machines together. <br>
+		If you then pick option <b>J</b> on this connected slot machine, you can expect to roughly get the sum of the coins, for option <b>J</b>, from the two slot machines you played earlier. <br> 
+		In this example, you would end up getting <b>4.0 + 0.3 = 4.3</b> coins as shown below. <br>
+		<img src="figs/GreenBluePressed.png" width="600"><br><br>
+		So, if you figure out the patterns in the two slot machines in a casino, you can <b>sum</b> up the coins, for all options, in your head to know the pattern for the connected slot machine. <br>
+		You can actually pick the most lucrative arm from the <b>first trail</b> onwards for these connected slot machines. <br><br>
+		<button type="button" name="button"; onclick="clickStart('tutorial','page7a')";> Back </button>
+		<button type="button" name="button"; onclick="clickStart('tutorial','page8')";>  Check Comprehension </button>
+		</p>
+	</div> -->
+	<!-- change point -->
+	<div id="tutorial" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Connected Machine</h2>
+		<p style="font-size:125%; text-align: center;">			
+		Imagine you enter a casino and start playing against the first slot machine. <br>
+		This machine could be either from Blue Lagoons or Green Geeks. In this casino, the first slot machine was made by Blue Lagoons. <br>
+		Let us say, you picked option <b>D</b> on one of the trials and got <b>8.1</b> coins as shown below. <br>
+		<img src="figs/ChangeBD.png" width="500"><br>
+		Once you finish five trials on the first slot machine, you move to the second slot machine in the same casino. <br>
+		The second slot machine is made by the other company, Green Geeks in this case. <br>
+		On this slot machine, assume you got <b>4.3</b> coins from option <b>K</b> on one of the trials as shown below. <br>
+		<img src="figs/ChangeGK.png" width="500"> <br>
+		After playing your quota of trials on the second machine, the owners would connect the two slot machines together. <br>
+		The connected machine has blocks of three keys each from the first and the second slot machine as indicated by their color (shown below). <br>
+		If you pick option <b>D</b> in <strong style="color: #0090DF;"> blue</strong>, you get roughly the same number of coins as option <b>D</b> on the  <strong style="color: #0090DF;"> blue </strong>  slot machine. <br> 
+		Similarly, choosing option <b>K</b> in  <strong style="color: #50BF00;"> green </strong>  yields roughly the same number of coins as option on <b>K</b> the  <strong style="color: #50BF00;"> green </strong>  slot machine. <br>
+		<img src="figs/ChangeBGKD.png" width="800"> <br>
+		So, if you can figure out the patterns in the two slot machines in a casino, you would know the pattern for the connected slot machine. <br>
+		You can actually pick the most lucrative arm from the <b>first trail</b> onwards for these connected slot machines. <br><br>
+		<button type="button" name="button"; onclick="clickStart('tutorial','page7a')";> Back </button>
+		<button type="button" name="button"; onclick="clickStart('tutorial','page8')";> Check Comprehension </button>
+		</p>
+	</div>
+
+	<!-- <div id="objective:compositional" style="display:none">
+		<br>
+		<h2 style="text-align: center;"> Task Summary</h2>
+		<p style="font-size:125%; text-align: center;">		
+		Your goal today is to earn as <b>many coins as possible</b> in every casino. <br>
+		You can use the insights from your friend to figure out <b>which company produces which patterns</b>. <br>
+		Note that a company either only produces rising/falling machines, or it only produces alternating machines. <br>
+		Once you figure out the pattern for the individual slot machines, you can <b>add</b> them up in your head to know the pattern for the connected slot machine. <br>
+		So, you can actually pick the most lucrative arm of the connected slot machine from the <b>first trail</b> onwards! <br><br>
+		<!-- Do we show an example summed up pattern? -->
+		<!-- <button type="button" name="button"; onclick="clickStart('objective:compositional','page7a')"; > Back </button>
+		<button type="button" name="button"; onclick="clickStart('objective:compositional','page8')"; >Check Comprehension</button>
+		</p>
+	</div> --> 
+
+	<!--Condition based: Non-Compositional-->
+	<div id="page7b" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Oh wait!</h2>
+		<p style="font-size:125%; text-align: center;">			
+			The casino owners recently noticed that a lot of people were doing well on the new slot machines. <br>
+			They now want to challenge their visitors. <br>
+			So, they connected the machines together and asked people to play only against the connected slot machine instead. <br>
+			The machines are connected such that it has blocks of three keys (either <b>SDF</b> or <b>JKL</b>) from the two slot machines in the casino. <br>
+			Three options for such a connected machine will be <strong style="color: #50BF00;"> green </strong> and the remaining in <strong style="color: #0090DF;"> blue </strong> indicating the slot machine they are from. <br>
+			They can be connected in one of the two orders as shown below. <br>
+			<img id="changepoint_condition" src="figs/ChangePoint.png" width="600"><br>
+			The coins for an option of a specific color is equal to that you could have earned from the same colored slot machine in the casino. <br>
+			Essentially, you will be playing only <strong> one slot machine </strong> (connected green-blue) in each casino today. <br>
+			Hope you are up for the challenge! <br>
+		<br>			
+		<button type="button" name="button"; onclick="clickStart('page7b','page6')"; > Back </button>
+		<button type="button" name="button"; onclick="clickStart('page7b','page8')"; > Check Comprehension </button>
+		</p>
+	</div>
+
+	<!-- tutorial for non-compositional
+	<div id="objective:noncompositional" style="display:none">
+		<br>
+		<h2 style="text-align: center;"> Task Summary</h2>
+		<p style="font-size:125%; text-align: center;">		
+			Your goal today is to earn as <b>many coins as possible</b> in every casino. <br>
+			You can use the insight given by your friend about the possible patterns to earn a lot more coins. <br> 
+			Since you only play against the connected machine today, you could <b>sum</b> up the patterns shown in your head. <br>
+			This would give you an idea of how many coins you could earn from the different options of the connected slot machine. <br>
+			<!-- Do we show an example summed up pattern? -->
+		<!-- <button type="button" name="button"; onclick="clickStart('objective:noncompositional','page7b')"; > Back </button>
+		<button type="button" name="button"; onclick="clickStart('objective:noncompositional','page8')"; >Check Comprehension</button>
+		</p>
+	</div> --> 
+
+	<!--Comprehension check-->
+	<div id="page8" style="display:none">
+		<fieldset>
+			<legend>Please answer a few questions about this study before proceeding</legend>
+			<p style="font-size:100%;color:maroon;"> You will only be directed to the next page if you manage to answer all of the questions correctly.</p>
+		
+			<fieldset> 
+				 <!-- </fieldset> style="float:left;width:400px;margin:5px"> -->
+				<b>What is your goal when you visit a casino? </b><br>
+				<label for="q1l1" style="font-weight: normal;"><input type="radio" name="q1" id="l1"><span id="q1l1"> Try out all options on every slot machine in the casino. </span></label><br>
+				<label for="q1l2" style="font-weight: normal;"><input type="radio" name="q1" id="icheck1"><span id="q1icheck1"> Gain as many BC coins as possible from each slot machine. </span></label><br>
+				<label for="q1l3" style="font-weight: normal;"><input type="radio" name="q1" id="l2"><span id="q1l2"> Pick an arbitary option in every try. </span></label><br>
+				<!-- <label for="q1l4" style="font-weight: normal;"><input type="radio" name="q1" > I do not know. </label> -->
+				<br>
+			</fieldset>
+			<fieldset> 
+				 <!-- style="float:left;width:400px;margin:5px"> -->
+				<b>How many slot machines will you play against in each casino? </b><br>
+				<label for="q2l1" style="font-weight: normal;"><input type="radio" name="q2" id="l1"/><span id="q2l1"> May change from casino to casino. </span></label><br>
+				<label for="q2l2" style="font-weight: normal;"><input type="radio" name="q2" id="l2"/><span id="q2l2"> 2 </span></label><br>
+				<label for="q2l3" style="font-weight: normal;"><input type="radio" name="q2" id="icheck2"> <span id="q2icheck2"> 1 </span></label><br>
+				<!-- <label for="q2l4" style="font-weight: normal;"><input type="radio" name="q2"> I do not know. </label>-->
+				<br>
+			</fieldset>
+			<fieldset>
+			<!-- style="float:left;width:400px;margin:5px"> -->
+				<b>Let us say a machine from GreenGeeks followed a rising pattern in a casino, <br>
+				what pattern will another machine from them follow in the next casino?</b> <br>
+				<label for="q3l1" style="font-weight: normal;"><input type="radio" name="q3" id="l1"><span id="q3l1"> 
+					Rising pattern again. </span></label><br>
+				<label for="q3l2" style="font-weight: normal;"><input type="radio" name="q3" id="icheck3"><span id="q3icheck3"> 
+					Either rising or falling, one needs to figure out which. </span></label><br>
+				<label for="q3l3" style="font-weight: normal;"><input type="radio" name="q3" id="l3"><span id="q3l3"> 
+					Falling pattern for sure. </span></label><br>
+				<label for="q3l4" style="font-weight: normal;"><input type="radio" name="q3" id="l4"><span id="q3l4"> 
+					Either rising, falling or alternating, one needs to figure out which. </span></label><br>
+				<br>
+			</fieldset>
+			<!-- <fieldset> -->
+			<!-- style="float:left;width:400px;margin:5px" -->
+				<!-- <b> What does pressing an option that is green or blue mean? </b><br>
+				<label for="q4l2" style="font-weight: normal;"><input type="radio" name="q4" id="icheck4"><span id="q4icheck4"> 
+					Choosing the same option on both the machines in the casino simultaneously. </span></label><br>
+				<label for="q4l1" style="font-weight: normal;"><input type="radio" name="q4" id='l2'><span id="q4l2">  -->
+					<!-- Choosing the option on either green or blue machine in the casino, you do not know which. </span></label><br>
+				<label for="q4l3" style="font-weight: normal;"><input type="radio" name="q4" id='l3'><span id="q4l3"> 
+					Choosing the option on a new slot machine unrelated to other slot machines in the casino. </span></label><br>
+				<!-- <label for="q4l4" style="font-weight: normal;"><input type="radio" name="q4"> I do not know. </label><br> -->
+			<!-- <br> -->
+			<!-- </fieldset> --> 
+			<fieldset id="test_change">
+					<!-- style="float:left;width:400px;margin:5px" -->
+					<b> What would be the coins you can expect for <b>option S</b> in green on the connected slot machine 
+					    if the same option had resulted in <b>5.0</b> coins on the slot machine made by Green Geeks and <b>2.1</b> 
+						coins on the slot machine made by Blue Lagoons in the same casino? </b><br>
+					<label for="q5l2" style="font-weight: normal;"><input type="radio" name="q5" id="icheck5"><span id="q5icheck5"> 
+						Roughly 5.0 </span></label><br>
+					<label for="q5l3" style="font-weight: normal;"><input type="radio" name="q5" id='l3'><span id="q5l3"> 
+						Roughly 7.1 </span></label><br>
+					<label for="q5l4" style="font-weight: normal;"><input type="radio" name="q5" id='l4'><span id="q5l4"> 
+						Roughly 2.1 </span></label><br>
+					<label for="q5l1" style="font-weight: normal;"><input type="radio" name="q5" id='l2'><span id="q5l2"> 
+						Cannot say </span></label><br>
+				</fieldset>
+		</fieldset>
+		<br>
+		<button type="button" name="button"; onclick="clickStart('page8','page6')"; > Back </button>
+		<button type="button" name="button"; onclick="instructioncheck()";> <span id="check"> Check Answers </span> </button>  
+	</div>
+
+	<!--Keyboard layout-->
+	<div id="page9" style="display:none">
+		<br>
+		<h2 style="text-align: center;">Keyboard finger position</h2>
+		<p style="font-size:125%; text-align: center;">
+		We kindly ask you to place your hands on the keyboard as shown in the picture below.<br>
+		Please use your left hand to select the options <b>S</b>, <b>D</b> or <b>F</b>. Use your right hand to select <b>J</b>, <b>K</b> or <b>L</b>.<br>
+		Please use your left index finger to select <b>F</b>, and your right index finger to select <b>J</b>, and so forth.<br>
+		<br>
+		<img src="figs/fingerposition.png" width="600" ><br><br>
+		<button type="button" name="button"; onclick=""; > <span style="color: gray;"> Back </span> </button>
+		<button type="button" name="button"; onclick="clickStart('page9','page10')"; >Next</button>  
+		<br>
+		</p>
+	</div>
+	
+	<!--task-->
+	<div id="page10" style="display:none">
+		<h1> <font size="4">Please choose an option to gain BC coins.</font> </h1>
+		<div id="explainshow" style="display:none">
+			<p> <b>Summarized Instructions:</b></p>
+			<p><b>I.</b> Below, there are 6 different options marked by different letters. When you press the letter/symbol of a particular option on your keyboard, the number of BC coins you earn for that option will be revealed and will be displayed below for 2 seconds. </p>
+			<p><b>II.</b> Options can be repeatedly chosen, although there may be small variations in the BC coins earned.</p>
+			<p><b>III.</b> Every option can lead to different amounts of BC coins. Your task is to earn as many coins as possible by selecting valuable options. </p>
+			<p><b>IV.</b> On top of the options, you can see how many tries you have left for the current slot machine and the amount of coins you have earned so far.</p>
+			<p><b>V.</b> The options are colored based on the company that manufactured it. Knowing which company produces which pattern can help you to gain more coins.</p>				
+			<button type="button" name="button"; onclick="clickStart('explainshow','explainhide')"; >Hide guidelines</button>
+		</div>
+		<div id="explainhide" style="display:block">
+			<button type="button" name="button"; onclick="clickStart('explainhide','explainshow')"; >Show guidelines</button>
+		</div>
+		<div id="begintask" style="display:block">
+			<center>
+				<h1><div id="task_number" style="text-decoration: underline;"> Casino 1 </div></h1>
+				<b><h3><div id="remain">Number of trials left: 5</div></h3></b>
+				<b><h3><div id="score">Total Coins Earned: 0.0</div></h3></b></b>
+				<div id="feature"></div></b></b>
+				<div id='arm1' style="display: inline"></div>
+				<div id='arm2' style="display: inline"></div>
+				<div id='arm3' style="display: inline"></div>
+				<div id='arm4' style="display: inline"></div>
+				<div id='arm5' style="display: inline"></div>
+				<div id='arm6' style="display: inline"></div>
+				<div id='arm7' style="display: inline"></div>
+				<div id='arm8' style="display: inline"></div><br>        
+				<div id="next" style="display: block">
+				<b><h2><div id="outcome" style="color: black; font-weight: bold;">Please choose an option!</div></h2></b>
+				</div>
+			</center>   
+		</div>
+	</div>
+	<div id="showperformance" style="display:none">
+		<center>
+			<h3><div id="numtasks"> Casino 0 out of 20 now visited! </div></h3>
+			<div style="font-size:125%; text-align: center;"> You earned <span id="percentreward" style="font-weight: bold;"> 0 </span><b>%</b> of maximum possible BC coins in the last casino.</div><br>
+			<div style="font-size:125%; text-align: center;"> Total money earned so far <b>£</b><span id="realmoney" style="font-weight: bold;"> 0 </span>.</div><br>
+			<!-- Remember that the pattern associated with a slot machine manufactured by a company remains as you move to the next casino.  -->
+			<button type="button" name="button"; onclick="clickStart('showperformance','page10')"; id='nextcasino'>Next Casino</button>
+		</center>
+	</div>
+	<div id="slotmachinechange" style="display:none">
+		<center>
+		<h4><div> Having finished playing a machine from <span id='company1' style="font-style: italic;"> Blue Lagoon</span>, 
+					now you play a slot machine from <span id='company2' style="font-style: italic;"> Blue Lagoon!</span></div></h4><br>
+		<!-- <h5> Hope you are slowly being able to figure out the patterns for machines from each company ;) </h5> -->
+		<button type="button" name="button"; onclick="clickStart('slotmachinechange','page10')";  id="secondsubtask"> Next Slot Machine </button>
+		</center>   
+	</div>
+	<div id="composition_machine" style="display:none">
+		<center>
+			<h4><div> Now, you play the connected slot machine! </div></h4><br>
+			<button type="button" name="button"; onclick="clickStart('composition_machine','page10')"; id="compositiontask" > Next Slot Machine</button>
+		</center>
+	</div>
+	
+	<!--demographics-->
+	<div id="page11" style="display:none">
+		<!-- <h1> <font size="4">Please tell us something about yourself.</font> </h1> -->
+		<fieldset>
+			<legend>Please tell us something about yourself.</legend>
+
+			<fieldset>
+			<!-- style="float:left;width:400px;margin:5px"> -->
+				<b>How old are you? </b><br>
+				<label for="q5l1" style="font-weight: normal;"><input id="age" type="radio" name="age" onclick="setage(20)" > 18-25 </label> <br>
+				<label for="q5l2" style="font-weight: normal;"><input id="age" type="radio" name="age" onclick="setage(30)" > 26-35 </label> <br>
+				<label for="q5l3" style="font-weight: normal;"><input id="age" type="radio" name="age" onclick="setage(40)" > 36-50 </label><br>
+				<label for="q5l4" style="font-weight: normal;"><input id="age" type="radio" name="age" onclick="setage(50)" > above 50 </label><br>
+			</fieldset>
+
+			<fieldset>
+			<!-- style="float:left;width:400px;margin:5px"> -->
+				<b>What's your gender? </b><br>
+				<label for="q6l1" style="font-weight: normal;"><input id="gender" type="radio" name="gender" onclick="setgender(0)" > Female </label><br>
+				<label for="q6l2" style="font-weight: normal;"><input id="gender" type="radio" name="gender" onclick="setgender(1)" > Male </label><br>
+				<label for="q6l3" style="font-weight: normal;"><input id="gender" type="radio" name="gender" onclick="setgender(2)" > Diverse </label><br>
+			</fieldset>
+
+			<fieldset>
+			 <!-- style="float:left;width:400px;margin:5px"> -->
+				<b>Handedness? </b><br>
+				<label for="q7l1" style="font-weight: normal;"><input type="radio" name="handed" onclick="sethand(0)" > Right </label><br>
+				<label for="q7l2" style="font-weight: normal;"><input type="radio" name="handed" onclick="sethand(1)"> Left  </label><br>
+			</fieldset>
+		</fieldset>
+
+		<div style="width:50px;margin:0 auto">
+			<button type="button" name="button"; onclick="mysubmit()"; >Done</button>
+		</div>
+	</div>
+
+	<!-- renumeration -->
+	<div id="page12" style="display:none">
+		<h2 style="text-align: center;">Your performance and reward</h2>
+		<div id="result" style="text-align: center; font-size: 125%"> </div><br>
+		<div id="money" style="text-align: center; font-size: 125%">  </div><br>
+		<p style="font-size:125%; text-align: center;">
+		Thank you very much for participating in our study.<br>
+		Your Completion Code is:<br> <span id="completioncode" style="font-weight: bold;">compbandits</span><br>
+		In case you have any questions, please contact us via our Prolific account or write an email to<br> <b>cpilab@tue.mpg.de</b> <br><br>
+		
+		You can now safely close the window.
+		</p>
+	</div>
+</div>
+
+<script src="js/compositionalbandit.js" charset="utf-8"></script>
+</body>
+
+</html>
